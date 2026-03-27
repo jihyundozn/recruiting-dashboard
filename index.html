@@ -1,368 +1,336 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>채용 대시보드</title>
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --line: #d9e1ea;
-      --text: #17324d;
-      --muted: #66778a;
-      --brand: #2F5D8A;
-      --brand-soft: #eaf1f7;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; background: var(--bg); color: var(--text); }
-    .wrap { max-width: 1440px; margin: 0 auto; padding: 24px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 1px 3px rgba(23,50,77,.05); }
-    .header { padding: 24px; margin-bottom: 18px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
-    h1 { margin: 0 0 8px; font-size: 32px; line-height: 1.1; }
-    .sub { color: var(--muted); font-size: 14px; }
-    .filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .select { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--text); font-size: 14px; min-width: 160px; }
-    .pill { padding: 9px 12px; background: var(--brand-soft); color: var(--brand); border-radius: 999px; font-size: 13px; font-weight: 600; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
-    .kpi { padding: 18px; min-height: 120px; }
-    .kpi .label { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
-    .kpi .value { font-size: 34px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
-    .kpi .meta { font-size: 13px; color: var(--muted); }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-    .section { padding: 20px; }
-    .section h2 { margin: 0 0 14px; font-size: 19px; }
-    .bars { display: grid; gap: 12px; }
-    .bar-row .top { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; gap: 10px; }
-    .track { background: #eef2f6; height: 12px; border-radius: 999px; overflow: hidden; }
-    .fill { background: var(--brand); height: 100%; display: inline-block; }
-    .grouped-legend { display:flex; gap:16px; font-size:13px; color:var(--muted); margin-bottom: 10px; flex-wrap: wrap; }
-    .legend-dot { display:inline-block; width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { padding: 12px 10px; border-bottom: 1px solid #edf1f5; text-align: left; white-space: nowrap; }
-    th { color: var(--muted); font-weight: 600; background: #fafbfd; position: sticky; top: 0; }
-    .mini-cards { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 14px; }
-    .mini { border:1px solid var(--line); border-radius:16px; padding:16px; background:#fff; }
-    .mini .t { font-size:13px;color:var(--muted); margin-bottom:8px; }
-    .mini .v { font-size:28px;font-weight:700; }
-    .mini .m { font-size:13px;color:var(--muted); margin-top:6px; }
-    .stage-stack { display:grid; gap:14px; }
-    .segments { display:flex; height:14px; border-radius:999px; overflow:hidden; background:#eef2f6; }
-    .seg { height:100%; display: inline-block; }
-    .seg-labels { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:6px; }
-    .seg-dot { width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle; }
-    .empty { padding: 18px; color: var(--muted); font-size: 14px; }
-    @media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-    @media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } .kpi-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } .mini-cards { grid-template-columns: 1fr; } }
-    @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr; } .wrap { padding: 14px; } h1 { font-size: 26px; } }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>채용 대시보드</title>
+<style>
+  :root {
+    --bg:#f5f7fb; --card:#fff; --line:#d9e1ea; --text:#17324d; --muted:#66778a;
+    --brand:#2F5D8A; --brand2:#8fb0d0; --brand3:#c7d9ea; --brand4:#dfe8f1;
+    --stage1:#dbe7f2; --stage2:#bfd2e5; --stage3:#9dbad4; --stage4:#7ca1c2; --stage5:#5d87ad; --stage6:#44709b; --stage7:#2F5D8A;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; }
+  .wrap { max-width:1440px; margin:0 auto; padding:24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:20px; box-shadow:0 1px 3px rgba(23,50,77,.05); }
+  .header { padding:24px; margin-bottom:18px; display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap; }
+  h1 { margin:0 0 8px; font-size:32px; line-height:1.1; }
+  .sub { color:var(--muted); font-size:14px; }
+  .filters { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .select { padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--text); font-size:14px; min-width:160px; }
+  .pill { padding:9px 12px; background:#eaf1f7; color:var(--brand); border-radius:999px; font-size:13px; font-weight:600; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+  .kpi { padding:18px; min-height:120px; }
+  .label { font-size:14px; color:var(--muted); margin-bottom:10px; }
+  .value { font-size:34px; font-weight:700; letter-spacing:-.02em; margin-bottom:6px; }
+  .meta { font-size:13px; color:var(--muted); }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+  .section { padding:20px; }
+  .section h2 { margin:0 0 14px; font-size:19px; }
+  .bars, .stack-list { display:grid; gap:12px; }
+  .bar-row .top { display:flex; justify-content:space-between; gap:12px; margin-bottom:6px; font-size:14px; }
+  .track { background:#eef2f6; height:12px; border-radius:999px; overflow:hidden; display:flex; }
+  .fill { height:100%; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:13px; margin-bottom:10px; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:6px; vertical-align:middle; }
+  .mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:14px; }
+  .mini { border:1px solid var(--line); border-radius:16px; padding:16px; }
+  .mini .t { font-size:13px; color:var(--muted); margin-bottom:8px; }
+  .mini .v { font-size:28px; font-weight:700; }
+  .mini .m { font-size:13px; color:var(--muted); margin-top:6px; }
+  .segments { display:flex; height:14px; border-radius:999px; overflow:hidden; background:#eef2f6; }
+  .seg-labels { display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:6px; }
+  .seg-dot { width:10px; height:10px; display:inline-block; border-radius:2px; margin-right:5px; vertical-align:middle; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:12px 10px; border-bottom:1px solid #edf1f5; text-align:left; white-space:nowrap; }
+  th { color:var(--muted); font-weight:600; background:#fafbfd; position:sticky; top:0; }
+  .empty { padding:18px; color:var(--muted); font-size:14px; }
+  @media (max-width:1200px) { .kpi-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (max-width:860px) { .grid-2 { grid-template-columns:1fr; } .kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .mini-grid { grid-template-columns:1fr; } }
+  @media (max-width:520px) { .kpi-grid { grid-template-columns:1fr; } .wrap { padding:14px; } h1 { font-size:26px; } }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card header">
-      <div>
-        <h1>채용 대시보드</h1>
-        <div class="sub">ApplicantDB + PositionDB 기반 월간 분석형 대시보드</div>
-      </div>
-      <div class="filters">
-        <select id="monthFilter" class="select"></select>
-        <select id="deptFilter" class="select"><option value="전체">전체 부서</option></select>
-        <div class="pill" id="statusLabel">데이터 불러오는 중</div>
-      </div>
+<div class="wrap">
+  <div class="card header">
+    <div>
+      <h1>채용 대시보드</h1>
+      <div class="sub">ApplicantDB + PositionDB 기반 월간 분석형</div>
     </div>
-
-    <div class="kpi-grid" id="kpiGrid"></div>
-
-    <div class="grid-2">
-      <div class="card section">
-        <h2>유입경로별 성과</h2>
-        <div class="grouped-legend">
-          <span><span class="legend-dot" style="background:#2F5D8A"></span>지원자 수</span>
-          <span><span class="legend-dot" style="background:#8fb0d0"></span>입사 완료 수</span>
-          <span><span class="legend-dot" style="background:#c7d9ea"></span>미수락 수</span>
-        </div>
-        <div id="sourcePerformance" class="bars"></div>
-      </div>
-
-      <div class="card section">
-        <h2>다이렉트소싱 성과</h2>
-        <div class="mini-cards" id="directMiniCards"></div>
-        <div id="directChart" class="bars"></div>
-      </div>
+    <div class="filters">
+      <select id="monthFilter" class="select"></select>
+      <select id="deptFilter" class="select"><option value="전체">전체 부서</option></select>
+      <div class="pill" id="statusLabel">데이터 불러오는 중</div>
     </div>
+  </div>
 
-    <div class="grid-2">
-      <div class="card section">
-        <h2>월별 채용 결과 추이</h2>
-        <div class="grouped-legend">
-          <span><span class="legend-dot" style="background:#2F5D8A"></span>진행중인 포지션 수</span>
-          <span><span class="legend-dot" style="background:#8fb0d0"></span>지원자 수</span>
-          <span><span class="legend-dot" style="background:#c7d9ea"></span>불합격 수</span>
-          <span><span class="legend-dot" style="background:#dfe8f1"></span>입사 완료 수</span>
-        </div>
-        <div id="monthlyTrend" class="bars"></div>
-      </div>
+  <div class="kpi-grid" id="kpiGrid"></div>
 
-      <div class="card section">
-        <h2>포지션별 단계별 불합격 현황</h2>
-        <div id="positionRejection" class="stage-stack"></div>
+  <div class="grid-2">
+    <div class="card section">
+      <h2>유입경로별 성과</h2>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--brand)"></span>지원자 수</span>
+        <span><span class="dot" style="background:var(--brand2)"></span>입사 완료 수</span>
+        <span><span class="dot" style="background:var(--brand3)"></span>미수락 수</span>
       </div>
+      <div id="sourceChart" class="bars"></div>
     </div>
 
     <div class="card section">
-      <h2>포지션별 월간 요약</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>포지션</th>
-              <th>부서</th>
-              <th>지원자 수</th>
-              <th>불합격 수</th>
-              <th>미수락 수</th>
-              <th>입사 제안 수</th>
-              <th>입사 완료 수</th>
-              <th>다이렉트소싱 수락</th>
-              <th>가장 많은 이탈 단계</th>
-              <th>hire_goal</th>
-              <th>hire_count</th>
-              <th>리드타임</th>
-            </tr>
-          </thead>
-          <tbody id="summaryTable"></tbody>
-        </table>
+      <h2>다이렉트소싱 후보자 수 / 미수락 수 / 수락률</h2>
+      <div class="mini-grid" id="directCards"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--brand)"></span>다이렉트소싱 후보자 수</span>
+        <span><span class="dot" style="background:var(--brand3)"></span>미수락 수</span>
+        <span><span class="dot" style="background:var(--brand2)"></span>수락 인원</span>
       </div>
+      <div id="directChart" class="bars"></div>
     </div>
   </div>
+
+  <div class="grid-2">
+    <div class="card section">
+      <h2>월별 채용 결과 추이</h2>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--brand)"></span>진행중인 포지션 수</span>
+        <span><span class="dot" style="background:var(--brand2)"></span>지원자 수</span>
+        <span><span class="dot" style="background:var(--brand3)"></span>불합격 수</span>
+        <span><span class="dot" style="background:var(--brand4)"></span>입사 완료 수</span>
+      </div>
+      <div id="monthlyChart" class="bars"></div>
+    </div>
+
+    <div class="card section">
+      <h2>포지션별 단계별 불합격 현황</h2>
+      <div id="rejectChart" class="stack-list"></div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>포지션별 월간 요약</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>포지션</th>
+            <th>부서</th>
+            <th>지원자 수</th>
+            <th>불합격 수</th>
+            <th>미수락 수</th>
+            <th>입사 제안 수</th>
+            <th>입사 완료 수</th>
+            <th>다이렉트소싱 후보자 수</th>
+            <th>가장 많은 이탈 단계</th>
+            <th>hire_goal</th>
+            <th>hire_count</th>
+            <th>리드타임</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <script>
 const APPLICANT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS24f7JxwMT-uE567ecXPhTFpOE-D6dtTZI0BJsZop7M6bJj9eJhcbUrQBDlT0dew/pub?gid=407451000&single=true&output=csv";
 const POSITION_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS24f7JxwMT-uE567ecXPhTFpOE-D6dtTZl0BJsZop7M6bJj9eJhcbUrQBDlT0dew/pub?gid=1996116323&single=true&output=csv";
-
-function parseCsv(text) {
-  const rows = [];
-  let current = '';
-  let row = [];
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
-    if (char === '"') {
-      if (inQuotes && next === '"') { current += '"'; i++; } else { inQuotes = !inQuotes; }
-    } else if (char === ',' && !inQuotes) {
-      row.push(current); current = '';
-    } else if ((char === '\\n' || char === '\\r') && !inQuotes) {
-      if (char === '\\r' && next === '\\n') i++;
-      row.push(current);
-      if (row.some(v => v !== '')) rows.push(row);
-      row = []; current = '';
-    } else {
-      current += char;
-    }
-  }
-  if (current.length || row.length) { row.push(current); rows.push(row); }
-  const headers = (rows[0] || []).map(h => h.trim());
-  return rows.slice(1).map(cols => {
-    const obj = {};
-    headers.forEach((h, idx) => obj[h] = (cols[idx] || '').trim());
-    return obj;
-  });
-}
-function monthStart(month) { return new Date(month + '-01'); }
-function monthEnd(month) { const d = new Date(month + '-01'); return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
-function toDate(str) { if (!str) return null; const d = new Date(str); return isNaN(d.getTime()) ? null : d; }
-function parseNumber(v) { if (v === null || v === undefined || v === '') return 0; const n = Number(String(v).replace(/[^0-9.-]/g, '')); return isNaN(n) ? 0 : n; }
-function unique(arr) { return [...new Set(arr)]; }
-function sum(arr) { return arr.reduce((acc, cur) => acc + cur, 0); }
-function avg(arr) { return arr.length ? sum(arr) / arr.length : 0; }
-function fmtInt(n) { return new Intl.NumberFormat('ko-KR').format(Math.round(n || 0)); }
-function fmtPct(n) { if (!isFinite(n)) return '-'; return Math.round(n * 100) + '%'; }
-function makeBarRow(label, vals, max, colors) {
-  const htmlBars = vals.map((v, idx) => {
-    const w = max ? (v / max) * 100 : 0;
-    return '<div class="fill" style="width:' + w + '%; background:' + colors[idx] + '"></div>';
-  }).join('');
-  return '<div class="bar-row"><div class="top"><span>' + label + '</span><span>' + vals.map(v => fmtInt(v)).join(' / ') + '</span></div><div class="track">' + htmlBars + '</div></div>';
-}
-const stageColors = {
-  "지원 접수": "#dbe7f2",
-  "1차 인터뷰": "#bfd2e5",
-  "2차 인터뷰": "#9dbad4",
-  "온라인 인성검사": "#7ca1c2",
-  "1/2차 인터뷰(통합)": "#5d87ad",
-  "입사 제안": "#44709b",
-  "입사 대기": "#2F5D8A"
+const REJECTION_STAGES = ["지원 접수","1차 인터뷰","2차 인터뷰","온라인 인성검사","1/2차 인터뷰(통합)","입사 제안","입사 대기"];
+const STAGE_COLORS = {
+  "지원 접수":"var(--stage1)",
+  "1차 인터뷰":"var(--stage2)",
+  "2차 인터뷰":"var(--stage3)",
+  "온라인 인성검사":"var(--stage4)",
+  "1/2차 인터뷰(통합)":"var(--stage5)",
+  "입사 제안":"var(--stage6)",
+  "입사 대기":"var(--stage7)"
 };
-async function load() {
-  const statusLabel = document.getElementById('statusLabel');
+function parseCsv(text){
+  const rows=[]; let current=''; let row=[]; let inQuotes=false;
+  for(let i=0;i<text.length;i++){ const c=text[i], n=text[i+1];
+    if(c=='"'){ if(inQuotes && n=='"'){ current+='"'; i++; } else inQuotes=!inQuotes; }
+    else if(c==',' && !inQuotes){ row.push(current); current=''; }
+    else if((c=='\n' || c=='\r') && !inQuotes){ if(c=='\r' && n=='\n') i++; row.push(current); if(row.some(v=>v!=='')) rows.push(row); row=[]; current=''; }
+    else current+=c;
+  }
+  if(current.length || row.length){ row.push(current); rows.push(row); }
+  const headers=(rows[0]||[]).map(h=>h.trim());
+  return rows.slice(1).map(cols=>{ const o={}; headers.forEach((h,i)=>o[h]=(cols[i]||'').trim()); return o; });
+}
+function toDate(s){ if(!s) return null; const d=new Date(s); return isNaN(d)?null:d; }
+function monthStart(m){ return new Date(m+'-01'); }
+function monthEnd(m){ const d=new Date(m+'-01'); return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+function num(v){ if(v===undefined||v===null||v==='') return 0; const n=Number(String(v).replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; }
+function uniq(arr){ return [...new Set(arr.filter(Boolean))]; }
+function sum(arr){ return arr.reduce((a,b)=>a+b,0); }
+function avg(arr){ return arr.length ? sum(arr)/arr.length : 0; }
+function fmtInt(n){ return new Intl.NumberFormat('ko-KR').format(Math.round(n||0)); }
+function fmtPct(x){ return isFinite(x)? Math.round(x*100)+'%':'-'; }
+function barRow(label, values, max, colors){
+  const bars = values.map((v,i)=>`<div class="fill" style="width:${max? (v/max)*100:0}%; background:${colors[i]}"></div>`).join('');
+  return `<div class="bar-row"><div class="top"><span>${label}</span><span>${values.map(v=>fmtInt(v)).join(' / ')}</span></div><div class="track">${bars}</div></div>`;
+}
+async function load(){
+  const status = document.getElementById('statusLabel');
   try {
-    const [appRes, posRes] = await Promise.all([fetch(APPLICANT_CSV_URL), fetch(POSITION_CSV_URL)]);
-    const [appText, posText] = await Promise.all([appRes.text(), posRes.text()]);
-    const applicants = parseCsv(appText).filter(r => r.candidate_id || r.position || r.apply_month);
-    const positions = parseCsv(posText).filter(r => r.position_id || r.position_name);
-    statusLabel.textContent = 'Google Sheet 연결됨';
+    const [aRes,pRes] = await Promise.all([fetch(APPLICANT_CSV_URL), fetch(POSITION_CSV_URL)]);
+    const [aText,pText] = await Promise.all([aRes.text(), pRes.text()]);
+    const applicants = parseCsv(aText).filter(r=>r.candidate_id||r.position||r.apply_month);
+    const positions = parseCsv(pText).filter(r=>r.position_id||r.position_name);
+    status.textContent = 'Google Sheet 연결됨';
     init(applicants, positions);
-  } catch (e) {
-    statusLabel.textContent = '연결 실패';
-    document.getElementById('kpiGrid').innerHTML = '<div class="empty">시트 데이터를 불러오지 못했습니다.</div>';
+  } catch(e) {
     console.error(e);
+    status.textContent = '연결 실패';
+    document.getElementById('kpiGrid').innerHTML = '<div class="empty">시트 데이터를 불러오지 못했습니다.</div>';
   }
 }
-function init(applicants, positions) {
+function init(applicants, positions){
   const monthFilter = document.getElementById('monthFilter');
   const deptFilter = document.getElementById('deptFilter');
-  const months = unique(applicants.map(r => r.apply_month).filter(Boolean)).sort();
-  monthFilter.innerHTML = months.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  if (months.length) monthFilter.value = months[months.length - 1];
-  const depts = unique(applicants.map(r => r.department).concat(positions.map(r => r.department)).filter(Boolean)).sort();
-  deptFilter.innerHTML = '<option value="전체">전체 부서</option>' + depts.map(d => '<option value="' + d + '">' + d + '</option>').join('');
+  const months = uniq(applicants.map(r=>r.apply_month)).sort();
+  monthFilter.innerHTML = months.map(m=>`<option value="${m}">${m}</option>`).join('');
+  if(months.length) monthFilter.value = months[months.length-1];
+  const depts = uniq(applicants.map(r=>r.department).concat(positions.map(r=>r.department))).sort();
+  deptFilter.innerHTML = '<option value="전체">전체 부서</option>'+depts.map(d=>`<option value="${d}">${d}</option>`).join('');
 
-  function render() {
+  function filtered(){
     const month = monthFilter.value;
     const dept = deptFilter.value;
-    const appFiltered = applicants.filter(r => dept === '전체' || r.department === dept);
-    const posFiltered = positions.filter(r => dept === '전체' || r.department === dept);
-    const appMonth = appFiltered.filter(r => r.apply_month === month);
-    const mStart = monthStart(month);
-    const mEnd = monthEnd(month);
-    const activeThisMonth = posFiltered.filter(r => {
-      const open = toDate(r.open_date);
-      const close = toDate(r.close_date);
-      if (!open) return false;
-      return open <= mEnd && (!close || close >= mStart);
-    });
+    const appAll = applicants.filter(r=>dept==='전체' || r.department===dept);
+    const posAll = positions.filter(r=>dept==='전체' || r.department===dept);
+    const appMonth = appAll.filter(r=>r.apply_month===month);
+    const mStart = monthStart(month), mEnd = monthEnd(month);
+    const monthPositions = posAll.filter(r=>{ const od=toDate(r.open_date), cd=toDate(r.close_date); return od && od<=mEnd && (!cd || cd>=mStart); });
+    return {month, appAll, posAll, appMonth, monthPositions};
+  }
 
-    const ongoingPositions = posFiltered.filter(r => r.position_status === '진행중').length;
-    const monthlyHireGoal = sum(activeThisMonth.map(r => parseNumber(r.hire_goal)));
-    const monthlyHireCount = appFiltered.filter(r => r.final_result === '입사 완료' && (r.join_date || '').slice(0, 7) === month).length;
+  function render(){
+    const {month, appAll, posAll, appMonth, monthPositions} = filtered();
+
+    // KPIs exact request
+    const ongoingPositionCount = posAll.filter(r=>r.position_status==='진행중').length;
+    const monthlyHireGoal = sum(monthPositions.map(r=>num(r.hire_goal)));
+    const monthlyHireCount = appAll.filter(r=>r.final_result==='입사 완료' && (r.join_date||'').slice(0,7)===month).length;
     const monthlyApplicants = appMonth.length;
-    const monthlyDirectAccepted = appMonth.filter(r => r.is_direct_sourcing === 'Y' && r.final_result !== '미수락').length;
-    const avgLead = avg(activeThisMonth.map(r => parseNumber(r.lead_time_days)).filter(v => v > 0));
-
+    const monthlyDirectAccepted = appMonth.filter(r=>r.is_direct_sourcing==='Y' && r.final_result!=='미수락').length;
+    const averageLeadTime = avg(monthPositions.map(r=>num(r.lead_time_days)).filter(v=>v>0));
     const kpis = [
-      ['진행중인 포지션 수', fmtInt(ongoingPositions), 'PositionDB 기준'],
+      ['진행중인 포지션 수', fmtInt(ongoingPositionCount), 'PositionDB 기준'],
       ['당월 채용 중인 인원 수', fmtInt(monthlyHireGoal), 'hire_goal 합계'],
       ['당월 채용 완료 인원 수', fmtInt(monthlyHireCount), 'join_date 기준'],
       ['당월 지원자 수', fmtInt(monthlyApplicants), 'apply_month 기준'],
       ['당월 다이렉트소싱 후보자 수', fmtInt(monthlyDirectAccepted), 'Y + 미수락 제외'],
-      ['평균 리드타임', avgLead ? fmtInt(avgLead) + '일' : '-', 'PositionDB 기준']
+      ['평균 리드타임', averageLeadTime ? fmtInt(averageLeadTime)+'일' : '-', 'PositionDB 기준']
     ];
-    document.getElementById('kpiGrid').innerHTML = kpis.map(k =>
-      '<div class="card kpi"><div class="label">' + k[0] + '</div><div class="value">' + k[1] + '</div><div class="meta">' + k[2] + '</div></div>'
-    ).join('');
+    document.getElementById('kpiGrid').innerHTML = kpis.map(k=>`<div class="card kpi"><div class="label">${k[0]}</div><div class="value">${k[1]}</div><div class="meta">${k[2]}</div></div>`).join('');
 
-    const sources = unique(appMonth.map(r => r.source_detail).filter(Boolean));
-    const sourceRows = sources.map(s => {
-      const rows = appMonth.filter(r => r.source_detail === s);
-      return { name: s, applicants: rows.length, joins: rows.filter(r => r.final_result === '입사 완료').length, declined: rows.filter(r => r.final_result === '미수락').length };
-    }).sort((a, b) => b.applicants - a.applicants);
-    const maxSource = Math.max(1, ...sourceRows.map(r => Math.max(r.applicants, r.joins, r.declined)));
-    document.getElementById('sourcePerformance').innerHTML = sourceRows.length
-      ? sourceRows.map(r => makeBarRow(r.name, [r.applicants, r.joins, r.declined], maxSource, ['#2F5D8A', '#8fb0d0', '#c7d9ea'])).join('')
-      : '<div class="empty">해당 월 데이터가 없습니다.</div>';
-
-    const trendMonths = unique(
-      applicants.map(r => r.apply_month)
-      .concat(applicants.map(r => (r.join_date || '').slice(0,7)))
-      .concat(applicants.map(r => (r.rejection_date || '').slice(0,7)))
-      .concat(positions.map(r => (r.open_date || '').slice(0,7)))
-      .concat(positions.map(r => (r.close_date || '').slice(0,7)))
-      .filter(Boolean)
-    ).sort();
-
-    const monthlyTrendRows = trendMonths.map(m => {
-      const start = monthStart(m);
-      const end = monthEnd(m);
-      const ongoing = posFiltered.filter(r => {
-        const open = toDate(r.open_date);
-        const close = toDate(r.close_date);
-        if (!open) return false;
-        return open <= end && (!close || close >= start);
-      }).length;
+    // Chart 1 유입경로별 성과
+    const sources = uniq(appMonth.map(r=>r.source_detail));
+    const sourceRows = sources.map(s=>{
+      const rows = appMonth.filter(r=>r.source_detail===s);
       return {
-        month: m,
-        ongoing,
-        applicants: appFiltered.filter(r => r.apply_month === m).length,
-        rejected: appFiltered.filter(r => (r.final_result === '불합격' || r.final_result === '미수락') && (r.rejection_date || '').slice(0,7) === m).length,
-        joins: appFiltered.filter(r => r.final_result === '입사 완료' && (r.join_date || '').slice(0,7) === m).length
+        name:s,
+        applicants: rows.length,
+        joins: rows.filter(r=>r.final_result==='입사 완료').length,
+        declined: rows.filter(r=>r.final_result==='미수락').length
+      };
+    }).sort((a,b)=>b.applicants-a.applicants);
+    const sourceMax = Math.max(1, ...sourceRows.map(r=>Math.max(r.applicants,r.joins,r.declined)));
+    document.getElementById('sourceChart').innerHTML = sourceRows.length ? sourceRows.map(r=>barRow(r.name,[r.applicants,r.joins,r.declined],sourceMax,['var(--brand)','var(--brand2)','var(--brand3)'])).join('') : '<div class="empty">해당 월 데이터가 없습니다.</div>';
+
+    // Chart 2 월별 채용 결과 추이
+    const trendMonths = uniq(
+      appAll.map(r=>r.apply_month)
+      .concat(appAll.map(r=>(r.join_date||'').slice(0,7)))
+      .concat(appAll.map(r=>(r.rejection_date||'').slice(0,7)))
+      .concat(posAll.map(r=>(r.open_date||'').slice(0,7)))
+      .concat(posAll.map(r=>(r.close_date||'').slice(0,7)))
+    ).sort();
+    const trendRows = trendMonths.map(m=>{
+      const ms = monthStart(m), me = monthEnd(m);
+      const activePositions = posAll.filter(r=>{ const od=toDate(r.open_date), cd=toDate(r.close_date); return od && od<=me && (!cd || cd>=ms); }).length;
+      return {
+        month:m,
+        ongoing: activePositions,
+        applicants: appAll.filter(r=>r.apply_month===m).length,
+        rejected: appAll.filter(r=>r.final_result==='불합격' && (r.rejection_date||'').slice(0,7)===m).length,
+        joins: appAll.filter(r=>r.final_result==='입사 완료' && (r.join_date||'').slice(0,7)===m).length
       };
     });
-    const maxTrend = Math.max(1, ...monthlyTrendRows.map(r => Math.max(r.ongoing, r.applicants, r.rejected, r.joins)));
-    document.getElementById('monthlyTrend').innerHTML = monthlyTrendRows.length
-      ? monthlyTrendRows.map(r => makeBarRow(r.month, [r.ongoing, r.applicants, r.rejected, r.joins], maxTrend, ['#2F5D8A', '#8fb0d0', '#c7d9ea', '#dfe8f1'])).join('')
-      : '<div class="empty">표시할 월별 데이터가 없습니다.</div>';
+    const trendMax = Math.max(1, ...trendRows.map(r=>Math.max(r.ongoing,r.applicants,r.rejected,r.joins)));
+    document.getElementById('monthlyChart').innerHTML = trendRows.length ? trendRows.map(r=>barRow(r.month,[r.ongoing,r.applicants,r.rejected,r.joins],trendMax,['var(--brand)','var(--brand2)','var(--brand3)','var(--brand4)'])).join('') : '<div class="empty">표시할 월별 데이터가 없습니다.</div>';
 
-    const rejStages = ['지원 접수', '1차 인터뷰', '2차 인터뷰', '온라인 인성검사', '1/2차 인터뷰(통합)', '입사 제안', '입사 대기'];
-    const rejectionRelevant = appMonth.filter(r => ['불합격', '미수락'].includes(r.final_result) && r.position);
-    const positionsByReject = unique(rejectionRelevant.map(r => r.position)).map(pos => {
-      const rows = rejectionRelevant.filter(r => r.position === pos);
-      const counts = {};
-      rejStages.forEach(stage => counts[stage] = rows.filter(r => r.rejection_stage === stage).length);
-      const total = Object.values(counts).reduce((a,b) => a+b, 0);
-      return { pos, counts, total };
-    }).sort((a,b) => b.total - a.total);
+    // Chart 3 포지션별 단계별 불합격 현황
+    const rejectRows = uniq(appMonth.filter(r=>(r.final_result==='불합격' || r.final_result==='미수락') && r.position).map(r=>r.position)).map(pos=>{
+      const rows = appMonth.filter(r=>r.position===pos && (r.final_result==='불합격' || r.final_result==='미수락'));
+      const counts = Object.fromEntries(REJECTION_STAGES.map(s=>[s, rows.filter(r=>r.rejection_stage===s).length]));
+      const total = sum(Object.values(counts));
+      return {pos, counts, total};
+    }).sort((a,b)=>b.total-a.total);
+    const rejectHtml = rejectRows.length ? rejectRows.map(item=>{
+      const segs = REJECTION_STAGES.map(stage=>`<div class="fill" title="${stage}: ${item.counts[stage]}" style="width:${item.total ? (item.counts[stage]/item.total)*100 : 0}%; background:${STAGE_COLORS[stage]}"></div>`).join('');
+      return `<div><div class="bar-row"><div class="top"><span>${item.pos}</span><span>${fmtInt(item.total)}건</span></div><div class="track" style="height:14px">${segs}</div></div></div>`;
+    }).join('') + `<div class="seg-labels">${REJECTION_STAGES.map(stage=>`<span><span class="seg-dot" style="background:${STAGE_COLORS[stage]}"></span>${stage}</span>`).join('')}</div>` : '<div class="empty">해당 월의 불합격 데이터가 없습니다.</div>';
+    document.getElementById('rejectChart').innerHTML = rejectHtml;
 
-    document.getElementById('positionRejection').innerHTML = positionsByReject.length ? (
-      positionsByReject.map(item => {
-        const segs = rejStages.map(stage => {
-          const count = item.counts[stage];
-          const width = item.total ? (count / item.total) * 100 : 0;
-          return '<div class="seg" title="' + stage + ': ' + count + '" style="width:' + width + '%; background:' + stageColors[stage] + '"></div>';
-        }).join('');
-        return '<div><div class="bar-row"><div class="top"><span>' + item.pos + '</span><span>' + fmtInt(item.total) + '건</span></div><div class="segments">' + segs + '</div></div></div>';
-      }).join('') +
-      '<div class="seg-labels">' + rejStages.map(stage => '<span><span class="seg-dot" style="background:' + stageColors[stage] + '"></span>' + stage + '</span>').join('') + '</div>'
-    ) : '<div class="empty">해당 월의 불합격/미수락 데이터가 없습니다.</div>';
+    // Chart 4 다이렉트소싱 후보자 수 / 미수락 수 / 수락률
+    const directRows = appMonth.filter(r=>r.is_direct_sourcing==='Y');
+    const directCandidateCount = directRows.length;
+    const directDeclinedCount = directRows.filter(r=>r.final_result==='미수락').length;
+    const directAcceptedCount = directRows.filter(r=>r.final_result!=='미수락').length;
+    const directAcceptRate = directCandidateCount ? directAcceptedCount/directCandidateCount : 0;
+    document.getElementById('directCards').innerHTML = [
+      ['다이렉트소싱 후보자 수', fmtInt(directCandidateCount), 'Y 개수'],
+      ['미수락 수', fmtInt(directDeclinedCount), 'final_result = 미수락'],
+      ['수락률', fmtPct(directAcceptRate), '미수락 제외 비율']
+    ].map(c=>`<div class="mini"><div class="t">${c[0]}</div><div class="v">${c[1]}</div><div class="m">${c[2]}</div></div>`).join('');
+    const directBySource = uniq(directRows.map(r=>r.source_detail)).map(s=>{
+      const rows = directRows.filter(r=>r.source_detail===s);
+      return {name:s, total:rows.length, declined:rows.filter(r=>r.final_result==='미수락').length, accepted:rows.filter(r=>r.final_result!=='미수락').length};
+    }).sort((a,b)=>b.total-a.total);
+    const directMax = Math.max(1, ...directBySource.map(r=>Math.max(r.total,r.declined,r.accepted)));
+    document.getElementById('directChart').innerHTML = directBySource.length ? directBySource.map(r=>barRow(r.name,[r.total,r.declined,r.accepted],directMax,['var(--brand)','var(--brand3)','var(--brand2)'])).join('') : '<div class="empty">해당 월 다이렉트소싱 데이터가 없습니다.</div>';
 
-    const directMonth = appMonth.filter(r => r.is_direct_sourcing === 'Y');
-    const directCandidates = directMonth.length;
-    const directDeclined = directMonth.filter(r => r.final_result === '미수락').length;
-    const directAccepted = directMonth.filter(r => r.final_result !== '미수락').length;
-    const acceptRate = directCandidates ? directAccepted / directCandidates : 0;
-    document.getElementById('directMiniCards').innerHTML = [
-      ['다이렉트소싱 후보자 수', fmtInt(directCandidates), 'Y 개수'],
-      ['미수락 수', fmtInt(directDeclined), 'final_result = 미수락'],
-      ['수락률', fmtPct(acceptRate), '미수락 제외 비율']
-    ].map(c => '<div class="mini"><div class="t">' + c[0] + '</div><div class="v">' + c[1] + '</div><div class="m">' + c[2] + '</div></div>').join('');
-
-    const directBySource = unique(directMonth.map(r => r.source_detail).filter(Boolean)).map(s => {
-      const rows = directMonth.filter(r => r.source_detail === s);
-      return { name: s, total: rows.length, declined: rows.filter(r => r.final_result === '미수락').length, accepted: rows.filter(r => r.final_result !== '미수락').length };
-    }).sort((a,b) => b.total - a.total);
-    const maxDirect = Math.max(1, ...directBySource.map(r => Math.max(r.total, r.declined, r.accepted)));
-    document.getElementById('directChart').innerHTML = directBySource.length
-      ? directBySource.map(r => makeBarRow(r.name, [r.total, r.declined, r.accepted], maxDirect, ['#2F5D8A', '#c7d9ea', '#8fb0d0'])).join('')
-      : '<div class="empty">해당 월 다이렉트소싱 데이터가 없습니다.</div>';
-
-    const monthPositions = unique(appMonth.map(r => r.position).filter(Boolean));
-    const tableRows = monthPositions.map(pos => {
-      const rows = appMonth.filter(r => r.position === pos);
-      const meta = posFiltered.find(p => p.position_name === pos) || {};
-      const stageCounts = rejStages.map(stage => ({ stage, value: rows.filter(r => r.rejection_stage === stage).length })).sort((a,b) => b.value - a.value);
+    // Table exact request
+    const monthPosNames = uniq(appMonth.map(r=>r.position));
+    const tableRows = monthPosNames.map(pos=>{
+      const rows = appMonth.filter(r=>r.position===pos);
+      const meta = posAll.find(p=>p.position_name===pos) || {};
+      const stageCounts = REJECTION_STAGES.map(stage=>({stage, count: rows.filter(r=>r.rejection_stage===stage).length})).sort((a,b)=>b.count-a.count);
       return {
         position: pos,
-        department: rows[0] ? rows[0].department : (meta.department || '-'),
+        department: rows[0]?.department || meta.department || '-',
         applicants: rows.length,
-        rejects: rows.filter(r => r.final_result === '불합격').length,
-        declined: rows.filter(r => r.final_result === '미수락').length,
-        offers: rows.filter(r => r.final_result === '입사 제안').length,
-        joins: rows.filter(r => r.final_result === '입사 완료').length,
-        directAccepted: rows.filter(r => r.is_direct_sourcing === 'Y' && r.final_result !== '미수락').length,
-        topStage: stageCounts[0] && stageCounts[0].value ? stageCounts[0].stage : '-',
-        hireGoal: parseNumber(meta.hire_goal),
-        hireCount: parseNumber(meta.hire_count),
-        lead: parseNumber(meta.lead_time_days) ? fmtInt(parseNumber(meta.lead_time_days)) + '일' : '-'
+        rejected: rows.filter(r=>r.final_result==='불합격').length,
+        declined: rows.filter(r=>r.final_result==='미수락').length,
+        offers: rows.filter(r=>r.final_result==='입사 제안').length,
+        joins: rows.filter(r=>r.final_result==='입사 완료').length,
+        directAccepted: rows.filter(r=>r.is_direct_sourcing==='Y' && r.final_result!=='미수락').length,
+        topStage: stageCounts[0] && stageCounts[0].count ? stageCounts[0].stage : '-',
+        hireGoal: num(meta.hire_goal),
+        hireCount: num(meta.hire_count),
+        leadTime: num(meta.lead_time_days)
       };
-    }).sort((a,b) => b.applicants - a.applicants);
-
-    document.getElementById('summaryTable').innerHTML = tableRows.length
-      ? tableRows.map(r =>
-        '<tr><td>' + r.position + '</td><td>' + r.department + '</td><td>' + fmtInt(r.applicants) + '</td><td>' + fmtInt(r.rejects) + '</td><td>' + fmtInt(r.declined) + '</td><td>' + fmtInt(r.offers) + '</td><td>' + fmtInt(r.joins) + '</td><td>' + fmtInt(r.directAccepted) + '</td><td>' + r.topStage + '</td><td>' + fmtInt(r.hireGoal) + '</td><td>' + fmtInt(r.hireCount) + '</td><td>' + r.lead + '</td></tr>'
-      ).join('')
-      : '<tr><td colspan="12" class="empty">해당 월 포지션 데이터가 없습니다.</td></tr>';
+    }).sort((a,b)=>b.applicants-a.applicants);
+    document.getElementById('summaryTable').innerHTML = tableRows.length ? tableRows.map(r=>`<tr>
+      <td>${r.position}</td>
+      <td>${r.department}</td>
+      <td>${fmtInt(r.applicants)}</td>
+      <td>${fmtInt(r.rejected)}</td>
+      <td>${fmtInt(r.declined)}</td>
+      <td>${fmtInt(r.offers)}</td>
+      <td>${fmtInt(r.joins)}</td>
+      <td>${fmtInt(r.directAccepted)}</td>
+      <td>${r.topStage}</td>
+      <td>${fmtInt(r.hireGoal)}</td>
+      <td>${fmtInt(r.hireCount)}</td>
+      <td>${r.leadTime ? fmtInt(r.leadTime)+'일' : '-'}</td>
+    </tr>`).join('') : '<tr><td colspan="12" class="empty">해당 월 포지션 데이터가 없습니다.</td></tr>';
   }
-
   monthFilter.addEventListener('change', render);
   deptFilter.addEventListener('change', render);
   render();
