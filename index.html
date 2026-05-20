@@ -4,351 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>채용 대시보드</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <style>
-    :root {
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --primary: #2454d6;
-      --primary-dark: #1d3fa3;
-      --primary-soft: #eaf0ff;
-      --green: #17a673;
-      --shadow: 0 18px 45px rgba(20, 37, 63, 0.08);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: 'Noto Sans KR', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top left, #dce8ff 0, transparent 34%), var(--bg);
-    }
-
-    .page {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 40px 28px 64px;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 34px 38px;
-      border-radius: 30px;
-      background: linear-gradient(135deg, #1743c3 0%, #2f6df6 52%, #75a7ff 100%);
-      color: white;
-      box-shadow: var(--shadow);
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.14);
-      right: -120px;
-      top: -140px;
-    }
-
-    .hero-content { position: relative; z-index: 1; }
-
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 13px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(30px, 4vw, 46px);
-      line-height: 1.15;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      margin: 14px 0 0;
-      font-size: 16px;
-      color: rgba(255,255,255,0.86);
-    }
-
-    .updated-at {
-      margin-top: 20px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.72);
-    }
-
-    .filter-box {
-      min-width: 210px;
-      padding: 14px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.16);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-
-    .filter-box label {
-      display: block;
-      font-size: 12px;
-      font-weight: 800;
-      color: rgba(255,255,255,0.82);
-      margin-bottom: 8px;
-    }
-
-    .filter-box select {
-      width: 100%;
-      border: 0;
-      outline: none;
-      border-radius: 14px;
-      padding: 11px 12px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 800;
-      color: #14213d;
-      background: white;
-      cursor: pointer;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .kpi-card {
-      background: var(--card);
-      border: 1px solid rgba(229,231,235,0.9);
-      border-radius: var(--radius);
-      padding: 20px 18px;
-      box-shadow: var(--shadow);
-      min-height: 128px;
-    }
-
-    .kpi-label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .kpi-value {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-    }
-
-    .kpi-sub {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid rgba(229,231,235,0.9);
-      border-radius: var(--radius);
-      padding: 22px;
-      box-shadow: var(--shadow);
-      min-height: 360px;
-    }
-
-    .span-8 { grid-column: span 8; }
-    .span-7 { grid-column: span 7; }
-    .span-6 { grid-column: span 6; }
-    .span-5 { grid-column: span 5; }
-    .span-4 { grid-column: span 4; }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .panel-title {
-      margin: 0;
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
-    .panel-desc {
-      margin: 6px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--primary-soft);
-      color: var(--primary-dark);
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .chart-wrap {
-      position: relative;
-      height: 300px;
-    }
-
-    .chart-wrap.tall { height: 380px; }
-
-    .funnel-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 12px;
-    }
-
-    .funnel-item {
-      display: grid;
-      grid-template-columns: 132px 1fr 70px;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .funnel-stage {
-      font-size: 13px;
-      font-weight: 800;
-      color: #27364f;
-    }
-
-    .funnel-bar {
-      height: 16px;
-      border-radius: 999px;
-      background: #edf2f7;
-      overflow: hidden;
-    }
-
-    .funnel-fill {
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #2454d6, #71a2ff);
-      transition: width 0.6s ease;
-    }
-
-    .funnel-rate {
-      font-size: 13px;
-      font-weight: 800;
-      text-align: right;
-      color: var(--primary-dark);
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      min-width: 560px;
-    }
-
-    th, td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      color: var(--muted);
-      font-size: 12px;
-      background: #f9fafb;
-    }
-
-    td.num { text-align: right; font-weight: 700; }
-    tr:last-child td { border-bottom: 0; }
-
-    .loading {
-      display: grid;
-      place-items: center;
-      min-height: 220px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .empty {
-      padding: 28px;
-      border-radius: 18px;
-      background: #f9fafb;
-      color: var(--muted);
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .error-box {
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 16px;
-      border: 1px solid #fecaca;
-      background: #fff1f2;
-      color: #991b1b;
-      font-size: 14px;
-      display: none;
-    }
-
-    @media (max-width: 1180px) {
-      .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .span-8, .span-7, .span-6, .span-5, .span-4 { grid-column: span 12; }
-    }
-
-    @media (max-width: 720px) {
-      .page { padding: 24px 16px 44px; }
-      .hero { padding: 28px 24px; border-radius: 24px; }
-      .hero-top { flex-direction: column; }
-      .filter-box { width: 100%; }
-      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .panel { padding: 18px; }
-      .chart-wrap, .chart-wrap.tall { height: 280px; }
-      .funnel-item { grid-template-columns: 1fr; gap: 7px; }
-      .funnel-rate { text-align: left; }
-    }
+    :root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--line:#e5e7eb;--primary:#2454d6;--primary-dark:#1d3fa3;--primary-soft:#eaf0ff;--green:#17a673;--shadow:0 18px 45px rgba(20,37,63,.08);--radius:22px}*{box-sizing:border-box}body{margin:0;font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);background:radial-gradient(circle at top left,#dce8ff 0,transparent 34%),var(--bg)}.page{max-width:1440px;margin:0 auto;padding:40px 28px 64px}.hero{position:relative;overflow:hidden;padding:34px 38px;border-radius:30px;background:linear-gradient(135deg,#1743c3 0%,#2f6df6 52%,#75a7ff 100%);color:#fff;box-shadow:var(--shadow)}.hero:after{content:'';position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.14);right:-120px;top:-140px}.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;position:relative;z-index:1}.hero-content{position:relative;z-index:1}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.16);font-size:13px;font-weight:700;margin-bottom:18px}h1{margin:0;font-size:clamp(30px,4vw,46px);line-height:1.15;letter-spacing:-.04em}.hero p{margin:14px 0 0;font-size:16px;color:rgba(255,255,255,.86)}.updated-at{margin-top:20px;font-size:13px;color:rgba(255,255,255,.72)}.filter-box{min-width:230px;padding:14px;border-radius:20px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18)}.filter-box label{display:block;font-size:12px;font-weight:800;color:rgba(255,255,255,.82);margin:0 0 8px}.filter-box label:not(:first-child){margin-top:12px}.filter-box select{width:100%;border:0;outline:none;border-radius:14px;padding:11px 12px;font-family:inherit;font-size:14px;font-weight:800;color:#14213d;background:#fff;cursor:pointer}.kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;margin-top:24px}.kpi-card{background:var(--card);border:1px solid rgba(229,231,235,.9);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow);min-height:128px}.kpi-label{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:12px}.kpi-value{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.1}.kpi-sub{margin-top:10px;color:var(--muted);font-size:12px}.section-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:18px}.panel{background:var(--card);border:1px solid rgba(229,231,235,.9);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);min-height:360px}.span-8{grid-column:span 8}.span-7{grid-column:span 7}.span-6{grid-column:span 6}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.panel-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.panel-title{margin:0;font-size:19px;font-weight:800;letter-spacing:-.03em}.panel-desc{margin:6px 0 0;font-size:13px;color:var(--muted)}.badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:var(--primary-soft);color:var(--primary-dark);font-size:12px;font-weight:800;white-space:nowrap}.chart-wrap{position:relative;height:300px}.chart-wrap.tall{height:380px}.funnel-list{display:flex;flex-direction:column;gap:14px;margin-top:12px}.funnel-item{display:grid;grid-template-columns:132px 1fr 70px;align-items:center;gap:12px}.funnel-stage{font-size:13px;font-weight:800;color:#27364f}.funnel-bar{height:16px;border-radius:999px;background:#edf2f7;overflow:hidden}.funnel-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#2454d6,#71a2ff);transition:width .6s ease}.funnel-rate{font-size:13px;font-weight:800;text-align:right;color:var(--primary-dark)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted);font-size:12px;background:#f9fafb}td.num{text-align:right;font-weight:700}tr:last-child td{border-bottom:0}.loading{display:grid;place-items:center;min-height:220px;color:var(--muted);font-weight:700}.empty{padding:28px;border-radius:18px;background:#f9fafb;color:var(--muted);text-align:center;font-weight:700}.error-box{margin-top:18px;padding:16px;border-radius:16px;border:1px solid #fecaca;background:#fff1f2;color:#991b1b;font-size:14px;display:none}@media(max-width:1180px){.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.span-8,.span-7,.span-6,.span-5,.span-4{grid-column:span 12}}@media(max-width:720px){.page{padding:24px 16px 44px}.hero{padding:28px 24px;border-radius:24px}.hero-top{flex-direction:column}.filter-box{width:100%}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:18px}.chart-wrap,.chart-wrap.tall{height:280px}.funnel-item{grid-template-columns:1fr;gap:7px}.funnel-rate{text-align:left}}
   </style>
 </head>
 <body>
@@ -362,430 +24,93 @@
           <div class="updated-at" id="updatedAt">데이터 불러오는 중...</div>
         </div>
         <div class="filter-box">
-          <label for="monthFilter">조회 기간</label>
-          <select id="monthFilter" disabled>
-            <option value="all">전체 기간</option>
-          </select>
+          <label for="periodFilter">조회 기간</label>
+          <select id="periodFilter" disabled><option value="all">전체 기간</option></select>
+          <label for="departmentFilter">부서</label>
+          <select id="departmentFilter" disabled><option value="all">전체 부서</option></select>
         </div>
       </div>
     </section>
-
     <div class="error-box" id="errorBox"></div>
-
-    <section class="kpi-grid" id="kpiGrid">
-      <div class="loading">KPI 불러오는 중...</div>
-    </section>
-
+    <section class="kpi-grid" id="kpiGrid"><div class="loading">KPI 불러오는 중...</div></section>
     <section class="section-grid">
-      <article class="panel span-8">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">날짜별 지원현황</h2>
-            <p class="panel-desc">지원자 등록일 기준 일자별 지원자 수입니다.</p>
-          </div>
-          <span class="badge">Daily</span>
-        </div>
-        <div class="chart-wrap tall"><canvas id="dailyChart"></canvas></div>
-      </article>
-
-      <article class="panel span-4">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">현재 채용 단계별 현황</h2>
-            <p class="panel-desc">현재 단계 기준 지원자 분포입니다.</p>
-          </div>
-        </div>
-        <div class="chart-wrap tall"><canvas id="currentStageChart"></canvas></div>
-      </article>
-
-      <article class="panel span-7">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">지원경로별 성과</h2>
-            <p class="panel-desc">지원경로별 지원자 수와 합격자 수를 비교합니다.</p>
-          </div>
-          <span class="badge">Source</span>
-        </div>
-        <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
-      </article>
-
-      <article class="panel span-5">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">지원경로별 합격률</h2>
-            <p class="panel-desc">지원자 수가 많은 경로 중심으로 확인합니다.</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>지원경로</th>
-                <th>지원자</th>
-                <th>합격자</th>
-                <th>합격률</th>
-              </tr>
-            </thead>
-            <tbody id="sourceTableBody">
-              <tr><td colspan="4">데이터 불러오는 중...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <article class="panel span-6">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">단계별 전환율</h2>
-            <p class="panel-desc">지원 접수부터 최종 합격까지 단계별 이동률입니다.</p>
-          </div>
-          <span class="badge">Funnel</span>
-        </div>
-        <div class="funnel-list" id="funnelList">
-          <div class="loading">퍼널 데이터 불러오는 중...</div>
-        </div>
-      </article>
-
-      <article class="panel span-6">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">단계별 평균 리드타임</h2>
-            <p class="panel-desc">각 채용 단계 사이에 소요된 평균 일수입니다.</p>
-          </div>
-          <span class="badge">Days</span>
-        </div>
-        <div class="chart-wrap"><canvas id="leadtimeChart"></canvas></div>
-      </article>
+      <article class="panel span-8"><div class="panel-header"><div><h2 class="panel-title">날짜별 지원현황</h2><p class="panel-desc">지원자 등록일 기준 일자별 지원자 수입니다.</p></div><span class="badge">Daily</span></div><div class="chart-wrap tall"><canvas id="dailyChart"></canvas></div></article>
+      <article class="panel span-4"><div class="panel-header"><div><h2 class="panel-title">현재 채용 단계별 현황</h2><p class="panel-desc">현재 단계 기준 지원자 분포입니다.</p></div></div><div class="chart-wrap tall"><canvas id="currentStageChart"></canvas></div></article>
+      <article class="panel span-7"><div class="panel-header"><div><h2 class="panel-title">지원경로별 성과</h2><p class="panel-desc">지원경로별 지원자 수와 합격자 수를 비교합니다.</p></div><span class="badge">Source</span></div><div class="chart-wrap"><canvas id="sourceChart"></canvas></div></article>
+      <article class="panel span-5"><div class="panel-header"><div><h2 class="panel-title">지원경로별 합격률</h2><p class="panel-desc">지원자 수가 많은 경로 중심으로 확인합니다.</p></div></div><div class="table-wrap"><table><thead><tr><th>지원경로</th><th>지원자</th><th>합격자</th><th>합격률</th></tr></thead><tbody id="sourceTableBody"><tr><td colspan="4">데이터 불러오는 중...</td></tr></tbody></table></div></article>
+      <article class="panel span-6"><div class="panel-header"><div><h2 class="panel-title">단계별 전환율</h2><p class="panel-desc">지원 접수부터 최종 합격까지 단계별 이동률입니다.</p></div><span class="badge">Funnel</span></div><div class="funnel-list" id="funnelList"><div class="loading">퍼널 데이터 불러오는 중...</div></div></article>
+      <article class="panel span-6"><div class="panel-header"><div><h2 class="panel-title">단계별 평균 리드타임</h2><p class="panel-desc">각 채용 단계 사이에 소요된 평균 일수입니다.</p></div><span class="badge">Days</span></div><div class="chart-wrap"><canvas id="leadtimeChart"></canvas></div></article>
     </section>
   </main>
 
   <script>
     const CSV_URLS = {
-      kpi: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=626438949&single=true&output=csv",
-      dailyApplicants: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=955834123&single=true&output=csv",
-      source: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=421963923&single=true&output=csv",
-      currentStage: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=610700614&single=true&output=csv",
-      funnel: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=752205305&single=true&output=csv",
-      leadtime: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=705793979&single=true&output=csv",
-      kpiMonthly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1301373122&single=true&output=csv",
-      sourceMonthly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=152205647&single=true&output=csv",
-      currentStageMonthly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=14786469&single=true&output=csv",
-      funnelMonthly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1912759282&single=true&output=csv",
-      leadtimeMonthly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=508212962&single=true&output=csv"
+      kpi: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=626438949&single=true&output=csv',
+      dailyApplicants: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=955834123&single=true&output=csv',
+      source: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=421963923&single=true&output=csv',
+      currentStage: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=610700614&single=true&output=csv',
+      funnel: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=752205305&single=true&output=csv',
+      leadtime: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=705793979&single=true&output=csv',
+      kpiMonthly: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1301373122&single=true&output=csv',
+      sourceMonthly: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=152205647&single=true&output=csv',
+      currentStageMonthly: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=14786469&single=true&output=csv',
+      funnelMonthly: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1912759282&single=true&output=csv',
+      leadtimeMonthly: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=508212962&single=true&output=csv',
+      kpiMonthlyDepartment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=441384414&single=true&output=csv',
+      sourceMonthlyDepartment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=65842200&single=true&output=csv',
+      currentStageMonthlyDepartment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=862404154&single=true&output=csv',
+      funnelMonthlyDepartment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1281499051&single=true&output=csv',
+      leadtimeMonthlyDepartment: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYhRb7LYyJsUISKjUjyBAk0ulBbOUwIggzrf0gsCMotWh5WqiPBNnc9V1oZKr0l0DsvQhJHGeCoMfq/pub?gid=1228463778&single=true&output=csv'
     };
 
-    const KPI_LABELS = {
-      total_applicants: '전체 지원자 수',
-      active_applicants: '평가중 지원자 수',
-      hired_applicants: '합격자 수',
-      rejected_applicants: '불합격자 수',
-      avg_leadtime_total: '전체 평균 리드타임',
-      top_source: '최다 지원경로'
-    };
+    const KPI_LABELS = { total_applicants:'전체 지원자 수', active_applicants:'평가중 지원자 수', hired_applicants:'합격자 수', rejected_applicants:'불합격자 수', avg_leadtime_total:'전체 평균 리드타임', top_source:'최다 지원경로' };
+    const KPI_SUBS = { total_applicants:'지원자 등록일 기준', active_applicants:'현재 평가중 상태', hired_applicants:'최종 합격 처리 기준', rejected_applicants:'불합격 처리 기준', avg_leadtime_total:'지원일 → 합격일 평균', top_source:'지원자 수 기준 1위' };
+    const metricOrder = ['total_applicants','active_applicants','hired_applicants','rejected_applicants','avg_leadtime_total','top_source'];
+    const state = { data:{}, charts:{}, selectedPeriod:'all', selectedDepartment:'all' };
 
-    const KPI_SUBS = {
-      total_applicants: '지원자 등록일 기준',
-      active_applicants: '현재 평가중 상태',
-      hired_applicants: '최종 합격 처리 기준',
-      rejected_applicants: '불합격 처리 기준',
-      avg_leadtime_total: '지원일 → 합격일 평균',
-      top_source: '지원자 수 기준 1위'
-    };
+    function parseNumber(value){ const n = Number(String(value ?? '').replaceAll(',','').replace('%','').trim()); return Number.isFinite(n) ? n : 0; }
+    function formatNumber(value){ return parseNumber(value).toLocaleString('ko-KR'); }
+    function formatKpiValue(metric,value){ if(metric==='top_source') return value || '-'; if(metric==='avg_leadtime_total'){ const n=parseNumber(value); return n ? n.toFixed(1)+'일' : '-'; } return formatNumber(value); }
+    function formatPercent(value){ const n=parseNumber(value); return (n<=1 ? n*100 : n).toFixed(1)+'%'; }
+    function normalizeMonth(value){ const raw=String(value||'').trim(); if(raw.length>=7 && raw.charAt(4)==='-') return raw.slice(0,7); const d=new Date(raw); if(!Number.isNaN(d.getTime())) return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); return raw; }
+    function normalizeYear(value){ const m=normalizeMonth(value); return m.length>=4 ? m.slice(0,4) : ''; }
+    function periodType(){ return state.selectedPeriod==='all' ? 'all' : state.selectedPeriod.split(':')[0]; }
+    function periodValue(){ return state.selectedPeriod==='all' ? '' : state.selectedPeriod.split(':')[1]; }
+    function inPeriod(value){ const type=periodType(); const selected=periodValue(); if(type==='all') return true; if(type==='year') return normalizeYear(value)===selected; if(type==='month') return normalizeMonth(value)===selected; return true; }
+    function departmentMatches(row){ return state.selectedDepartment==='all' || row.department===state.selectedDepartment; }
+    function loadCsv(url){ return new Promise((resolve,reject)=>Papa.parse(url,{download:true,header:true,skipEmptyLines:true,complete:r=>resolve(r.data),error:reject})); }
+    function destroyChart(id){ if(state.charts[id]){ state.charts[id].destroy(); delete state.charts[id]; } }
 
-    const metricOrder = [
-      'total_applicants',
-      'active_applicants',
-      'hired_applicants',
-      'rejected_applicants',
-      'avg_leadtime_total',
-      'top_source'
-    ];
+    function groupRows(rows,keyField,sumFields){ const map=new Map(); rows.forEach(row=>{ const key=row[keyField]||'-'; if(!map.has(key)) map.set(key,{[keyField]:key}); const item=map.get(key); sumFields.forEach(field=>item[field]=(item[field]||0)+parseNumber(row[field])); }); return [...map.values()]; }
+    function aggregateKpi(rows){ const total=rows.reduce((s,r)=>s+parseNumber(r.total_applicants),0); const active=rows.reduce((s,r)=>s+parseNumber(r.active_applicants),0); const hired=rows.reduce((s,r)=>s+parseNumber(r.hired_applicants),0); const rejected=rows.reduce((s,r)=>s+parseNumber(r.rejected_applicants),0); const leadSum=rows.reduce((s,r)=>s+parseNumber(r.avg_leadtime_total)*parseNumber(r.hired_applicants),0); const avg=hired?leadSum/hired:''; const sourceBase=state.selectedDepartment==='all'?state.data.sourceMonthly:state.data.sourceMonthlyDepartment; const sourceRows=sourceBase.filter(row=>inPeriod(row.month)&&departmentMatches(row)); const sourceAgg=groupRows(sourceRows,'source_group',['applicants']).sort((a,b)=>parseNumber(b.applicants)-parseNumber(a.applicants)); return [{metric:'total_applicants',value:total},{metric:'active_applicants',value:active},{metric:'hired_applicants',value:hired},{metric:'rejected_applicants',value:rejected},{metric:'avg_leadtime_total',value:avg},{metric:'top_source',value:sourceAgg[0]?.source_group||''}]; }
+    function aggregateFunnel(rows){ const grouped=groupRows(rows,'stage',['reached','next_reached']); grouped.forEach(row=>{ const sample=rows.find(item=>item.stage===row.stage)||{}; row.stage_order=sample.stage_order||0; row.conversion_rate=parseNumber(row.reached)?parseNumber(row.next_reached)/parseNumber(row.reached):0; }); return grouped.sort((a,b)=>parseNumber(a.stage_order)-parseNumber(b.stage_order)); }
+    function aggregateLeadtime(rows){ const map=new Map(); rows.forEach(row=>{ const key=row.step||'-'; if(!map.has(key)) map.set(key,{step:key,count_candidates:0,weighted:0}); const item=map.get(key); const c=parseNumber(row.count_candidates); item.count_candidates+=c; item.weighted+=parseNumber(row.avg_leadtime_days)*c; }); return [...map.values()].map(row=>({step:row.step,count_candidates:row.count_candidates,avg_leadtime_days:row.count_candidates?row.weighted/row.count_candidates:0})); }
 
-    const state = { data: {}, charts: {}, selectedMonth: 'all' };
-
-    function parseNumber(value) {
-      if (value === null || value === undefined) return 0;
-      const cleaned = String(value).replace(/,/g, '').replace('%', '').trim();
-      const number = Number(cleaned);
-      return Number.isFinite(number) ? number : 0;
-    }
-
-    function formatNumber(value) {
-      return parseNumber(value).toLocaleString('ko-KR');
-    }
-
-    function formatKpiValue(metric, value) {
-      if (metric === 'top_source') return value || '-';
-      if (metric === 'avg_leadtime_total') {
-        const number = parseNumber(value);
-        return number ? `${number.toFixed(1)}일` : '-';
-      }
-      return formatNumber(value);
-    }
-
-    function formatPercent(value) {
-      const number = parseNumber(value);
-      if (number <= 1) return `${(number * 100).toFixed(1)}%`;
-      return `${number.toFixed(1)}%`;
-    }
-
-    function normalizeMonth(value) {
-      const raw = String(value || '').trim();
-      if (/^\d{4}-\d{2}/.test(raw)) return raw.slice(0, 7);
-      const date = new Date(raw);
-      if (!Number.isNaN(date.getTime())) {
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      }
-      return raw;
-    }
-
-    function loadCsv(url) {
-      return new Promise((resolve, reject) => {
-        Papa.parse(url, {
-          download: true,
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => resolve(results.data),
-          error: reject
-        });
-      });
-    }
-
-    function destroyChart(id) {
-      if (state.charts[id]) {
-        state.charts[id].destroy();
-        delete state.charts[id];
-      }
-    }
-
-    function getRows(type) {
-      const month = state.selectedMonth;
-      if (month === 'all') {
-        if (type === 'kpi') return state.data.kpi;
-        if (type === 'source') return state.data.source;
-        if (type === 'currentStage') return state.data.currentStage;
-        if (type === 'funnel') return state.data.funnel;
-        if (type === 'leadtime') return state.data.leadtime;
-      }
-
-      if (type === 'kpi') {
-        const row = state.data.kpiMonthly.find(item => normalizeMonth(item.month) === month) || {};
-        return metricOrder.map(metric => ({ metric, value: row[metric] || '' }));
-      }
-      if (type === 'source') return state.data.sourceMonthly.filter(row => normalizeMonth(row.month) === month);
-      if (type === 'currentStage') return state.data.currentStageMonthly.filter(row => normalizeMonth(row.month) === month);
-      if (type === 'funnel') return state.data.funnelMonthly.filter(row => normalizeMonth(row.month) === month).sort((a, b) => parseNumber(a.stage_order) - parseNumber(b.stage_order));
-      if (type === 'leadtime') return state.data.leadtimeMonthly.filter(row => normalizeMonth(row.month) === month);
+    function getRows(type){
+      const allPeriod=periodType()==='all'; const allDept=state.selectedDepartment==='all';
+      if(allPeriod && allDept){ if(type==='kpi') return state.data.kpi; if(type==='source') return state.data.source; if(type==='currentStage') return state.data.currentStage; if(type==='funnel') return state.data.funnel; if(type==='leadtime') return state.data.leadtime; }
+      if(type==='kpi'){ const base=allDept?state.data.kpiMonthly:state.data.kpiMonthlyDepartment; const rows=base.filter(row=>inPeriod(row.month)&&departmentMatches(row)); if(periodType()==='month'&&allDept){ const row=rows[0]||{}; return metricOrder.map(metric=>({metric,value:row[metric]||''})); } return aggregateKpi(rows); }
+      if(type==='source'){ const base=allDept?state.data.sourceMonthly:state.data.sourceMonthlyDepartment; const rows=base.filter(row=>inPeriod(row.month)&&departmentMatches(row)); return groupRows(rows,'source_group',['applicants','hired']).map(row=>({...row,hire_rate:parseNumber(row.applicants)?parseNumber(row.hired)/parseNumber(row.applicants):0})); }
+      if(type==='currentStage'){ const base=allDept?state.data.currentStageMonthly:state.data.currentStageMonthlyDepartment; const rows=base.filter(row=>inPeriod(row.month)&&departmentMatches(row)); return groupRows(rows,'current_stage_group',['applicants']); }
+      if(type==='funnel'){ const base=allDept?state.data.funnelMonthly:state.data.funnelMonthlyDepartment; return aggregateFunnel(base.filter(row=>inPeriod(row.month)&&departmentMatches(row))); }
+      if(type==='leadtime'){ const base=allDept?state.data.leadtimeMonthly:state.data.leadtimeMonthlyDepartment; return aggregateLeadtime(base.filter(row=>inPeriod(row.month)&&departmentMatches(row))); }
       return [];
     }
+    function getDailyRows(){ const rows=state.data.dailyApplicants||[]; if(periodType()==='all') return rows.slice(-90); return rows.filter(row=>inPeriod(row.applied_date)); }
 
-    function getDailyRows() {
-      const rows = state.data.dailyApplicants || [];
-      if (state.selectedMonth === 'all') return rows.slice(-90);
-      return rows.filter(row => normalizeMonth(row.applied_date) === state.selectedMonth);
-    }
+    function renderKpis(rows){ const map=Object.fromEntries(rows.map(row=>[row.metric,row.value])); document.getElementById('kpiGrid').innerHTML=metricOrder.map(metric=>'<div class="kpi-card"><div class="kpi-label">'+(KPI_LABELS[metric]||metric)+'</div><div class="kpi-value">'+formatKpiValue(metric,map[metric])+'</div><div class="kpi-sub">'+(KPI_SUBS[metric]||'')+'</div></div>').join(''); }
+    function renderDailyChart(rows){ destroyChart('daily'); state.charts.daily=new Chart(document.getElementById('dailyChart'),{type:'line',data:{labels:rows.map(r=>r.applied_date),datasets:[{label:'지원자 수',data:rows.map(r=>parseNumber(r.applicants)),borderColor:'#2454d6',backgroundColor:'rgba(36,84,214,.12)',pointRadius:2,pointHoverRadius:5,tension:.35,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:9}},y:{beginAtZero:true,ticks:{precision:0}}}}}); }
+    function renderSourceChart(rows){ destroyChart('source'); const sorted=[...rows].sort((a,b)=>parseNumber(b.applicants)-parseNumber(a.applicants)).slice(0,10); state.charts.source=new Chart(document.getElementById('sourceChart'),{type:'bar',data:{labels:sorted.map(r=>r.source_group),datasets:[{label:'지원자 수',data:sorted.map(r=>parseNumber(r.applicants)),backgroundColor:'#2454d6',borderRadius:10},{label:'합격자 수',data:sorted.map(r=>parseNumber(r.hired)),backgroundColor:'#17a673',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{maxRotation:35,minRotation:0}},y:{beginAtZero:true,ticks:{precision:0}}}}}); }
+    function renderSourceTable(rows){ const sorted=[...rows].sort((a,b)=>parseNumber(b.applicants)-parseNumber(a.applicants)).slice(0,12); document.getElementById('sourceTableBody').innerHTML=sorted.length?sorted.map(row=>'<tr><td>'+(row.source_group||'-')+'</td><td class="num">'+formatNumber(row.applicants)+'</td><td class="num">'+formatNumber(row.hired)+'</td><td class="num">'+formatPercent(row.hire_rate)+'</td></tr>').join(''):'<tr><td colspan="4" class="num">표시할 데이터가 없습니다.</td></tr>'; }
+    function renderCurrentStageChart(rows){ destroyChart('currentStage'); const sorted=[...rows].sort((a,b)=>parseNumber(b.applicants)-parseNumber(a.applicants)).slice(0,10); state.charts.currentStage=new Chart(document.getElementById('currentStageChart'),{type:'doughnut',data:{labels:sorted.map(r=>r.current_stage_group),datasets:[{data:sorted.map(r=>parseNumber(r.applicants)),backgroundColor:['#2454d6','#71a2ff','#17a673','#f59e0b','#ef4444','#8b5cf6','#14b8a6','#64748b','#f97316','#0ea5e9'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom'}}}}); }
+    function renderFunnel(rows){ const max=Math.max(...rows.map(r=>parseNumber(r.reached)),1); document.getElementById('funnelList').innerHTML=rows.length?rows.map(row=>{ const reached=parseNumber(row.reached); const width=Math.max(reached/max*100,4); return '<div class="funnel-item"><div class="funnel-stage">'+row.stage+'</div><div class="funnel-bar"><div class="funnel-fill" style="width:'+width+'%"></div></div><div class="funnel-rate">'+formatPercent(row.conversion_rate)+'</div></div>'; }).join(''):'<div class="empty">표시할 퍼널 데이터가 없습니다.</div>'; }
+    function renderLeadtimeChart(rows){ destroyChart('leadtime'); state.charts.leadtime=new Chart(document.getElementById('leadtimeChart'),{type:'bar',data:{labels:rows.map(r=>r.step),datasets:[{label:'평균 소요일',data:rows.map(r=>parseNumber(r.avg_leadtime_days)),backgroundColor:'#2454d6',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,title:{display:true,text:'일'}}}}}); }
+    function renderAll(){ renderKpis(getRows('kpi')); renderDailyChart(getDailyRows()); renderSourceChart(getRows('source')); renderSourceTable(getRows('source')); renderCurrentStageChart(getRows('currentStage')); renderFunnel(getRows('funnel')); renderLeadtimeChart(getRows('leadtime')); }
 
-    function renderKpis(kpiRows) {
-      const kpiMap = Object.fromEntries(kpiRows.map(row => [row.metric, row.value]));
-      document.getElementById('kpiGrid').innerHTML = metricOrder.map(metric => `
-        <div class="kpi-card">
-          <div class="kpi-label">${KPI_LABELS[metric] || metric}</div>
-          <div class="kpi-value">${formatKpiValue(metric, kpiMap[metric])}</div>
-          <div class="kpi-sub">${KPI_SUBS[metric] || ''}</div>
-        </div>
-      `).join('');
-    }
+    function initPeriodFilter(){ const select=document.getElementById('periodFilter'); const months=[...new Set((state.data.kpiMonthly||[]).map(r=>normalizeMonth(r.month)).filter(Boolean))].sort().reverse(); const years=[...new Set(months.map(m=>m.slice(0,4)))].sort().reverse(); select.innerHTML='<option value="all">전체 기간</option>'+years.map(y=>'<option value="year:'+y+'">'+y+'년</option>').join('')+months.map(m=>'<option value="month:'+m+'">'+m+'</option>').join(''); select.disabled=false; select.addEventListener('change',e=>{ state.selectedPeriod=e.target.value; renderAll(); }); }
+    function initDepartmentFilter(){ const select=document.getElementById('departmentFilter'); const departments=[...new Set((state.data.kpiMonthlyDepartment||[]).map(r=>r.department).filter(Boolean))].sort(); select.innerHTML='<option value="all">전체 부서</option>'+departments.map(d=>'<option value="'+d+'">'+d+'</option>').join(''); select.disabled=false; select.addEventListener('change',e=>{ state.selectedDepartment=e.target.value; renderAll(); }); }
 
-    function renderDailyChart(rows) {
-      destroyChart('daily');
-      state.charts.daily = new Chart(document.getElementById('dailyChart'), {
-        type: 'line',
-        data: {
-          labels: rows.map(row => row.applied_date),
-          datasets: [{
-            label: '지원자 수',
-            data: rows.map(row => parseNumber(row.applicants)),
-            borderColor: '#2454d6',
-            backgroundColor: 'rgba(36, 84, 214, 0.12)',
-            pointRadius: 2,
-            pointHoverRadius: 5,
-            tension: 0.35,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { ticks: { maxTicksLimit: 9 } },
-            y: { beginAtZero: true, ticks: { precision: 0 } }
-          }
-        }
-      });
-    }
-
-    function renderSourceChart(rows) {
-      destroyChart('source');
-      const sorted = [...rows].sort((a, b) => parseNumber(b.applicants) - parseNumber(a.applicants)).slice(0, 10);
-      state.charts.source = new Chart(document.getElementById('sourceChart'), {
-        type: 'bar',
-        data: {
-          labels: sorted.map(row => row.source_group),
-          datasets: [
-            {
-              label: '지원자 수',
-              data: sorted.map(row => parseNumber(row.applicants)),
-              backgroundColor: '#2454d6',
-              borderRadius: 10
-            },
-            {
-              label: '합격자 수',
-              data: sorted.map(row => parseNumber(row.hired)),
-              backgroundColor: '#17a673',
-              borderRadius: 10
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom' } },
-          scales: {
-            x: { ticks: { maxRotation: 35, minRotation: 0 } },
-            y: { beginAtZero: true, ticks: { precision: 0 } }
-          }
-        }
-      });
-    }
-
-    function renderSourceTable(rows) {
-      const sorted = [...rows].sort((a, b) => parseNumber(b.applicants) - parseNumber(a.applicants)).slice(0, 12);
-      document.getElementById('sourceTableBody').innerHTML = sorted.length ? sorted.map(row => `
-        <tr>
-          <td>${row.source_group || '-'}</td>
-          <td class="num">${formatNumber(row.applicants)}</td>
-          <td class="num">${formatNumber(row.hired)}</td>
-          <td class="num">${formatPercent(row.hire_rate)}</td>
-        </tr>
-      `).join('') : '<tr><td colspan="4" class="num">표시할 데이터가 없습니다.</td></tr>';
-    }
-
-    function renderCurrentStageChart(rows) {
-      destroyChart('currentStage');
-      const sorted = [...rows].sort((a, b) => parseNumber(b.applicants) - parseNumber(a.applicants)).slice(0, 10);
-      state.charts.currentStage = new Chart(document.getElementById('currentStageChart'), {
-        type: 'doughnut',
-        data: {
-          labels: sorted.map(row => row.current_stage_group),
-          datasets: [{
-            data: sorted.map(row => parseNumber(row.applicants)),
-            backgroundColor: ['#2454d6', '#71a2ff', '#17a673', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6', '#64748b', '#f97316', '#0ea5e9'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '62%',
-          plugins: { legend: { position: 'bottom' } }
-        }
-      });
-    }
-
-    function renderFunnel(rows) {
-      const maxReached = Math.max(...rows.map(row => parseNumber(row.reached)), 1);
-      document.getElementById('funnelList').innerHTML = rows.length ? rows.map(row => {
-        const reached = parseNumber(row.reached);
-        const width = Math.max((reached / maxReached) * 100, 4);
-        return `
-          <div class="funnel-item">
-            <div class="funnel-stage">${row.stage}</div>
-            <div class="funnel-bar"><div class="funnel-fill" style="width:${width}%"></div></div>
-            <div class="funnel-rate">${formatPercent(row.conversion_rate)}</div>
-          </div>
-        `;
-      }).join('') : '<div class="empty">표시할 퍼널 데이터가 없습니다.</div>';
-    }
-
-    function renderLeadtimeChart(rows) {
-      destroyChart('leadtime');
-      state.charts.leadtime = new Chart(document.getElementById('leadtimeChart'), {
-        type: 'bar',
-        data: {
-          labels: rows.map(row => row.step),
-          datasets: [{
-            label: '평균 소요일',
-            data: rows.map(row => parseNumber(row.avg_leadtime_days)),
-            backgroundColor: '#2454d6',
-            borderRadius: 10
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: 'y',
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { beginAtZero: true, title: { display: true, text: '일' } }
-          }
-        }
-      });
-    }
-
-    function renderAll() {
-      renderKpis(getRows('kpi'));
-      renderDailyChart(getDailyRows());
-      renderSourceChart(getRows('source'));
-      renderSourceTable(getRows('source'));
-      renderCurrentStageChart(getRows('currentStage'));
-      renderFunnel(getRows('funnel'));
-      renderLeadtimeChart(getRows('leadtime'));
-    }
-
-    function initMonthFilter() {
-      const select = document.getElementById('monthFilter');
-      const months = [...new Set((state.data.kpiMonthly || []).map(row => normalizeMonth(row.month)).filter(Boolean))].sort().reverse();
-      select.innerHTML = '<option value="all">전체 기간</option>' + months.map(month => `<option value="${month}">${month}</option>`).join('');
-      select.disabled = false;
-      select.addEventListener('change', event => {
-        state.selectedMonth = event.target.value;
-        renderAll();
-      });
-    }
-
-    async function initDashboard() {
-      Chart.defaults.font.family = "'Noto Sans KR', system-ui, sans-serif";
-      Chart.defaults.color = '#526071';
-      Chart.defaults.borderColor = '#e8edf5';
-      try {
-        const [kpi, dailyApplicants, source, currentStage, funnel, leadtime, kpiMonthly, sourceMonthly, currentStageMonthly, funnelMonthly, leadtimeMonthly] = await Promise.all([
-          loadCsv(CSV_URLS.kpi),
-          loadCsv(CSV_URLS.dailyApplicants),
-          loadCsv(CSV_URLS.source),
-          loadCsv(CSV_URLS.currentStage),
-          loadCsv(CSV_URLS.funnel),
-          loadCsv(CSV_URLS.leadtime),
-          loadCsv(CSV_URLS.kpiMonthly),
-          loadCsv(CSV_URLS.sourceMonthly),
-          loadCsv(CSV_URLS.currentStageMonthly),
-          loadCsv(CSV_URLS.funnelMonthly),
-          loadCsv(CSV_URLS.leadtimeMonthly)
-        ]);
-
-        state.data = { kpi, dailyApplicants, source, currentStage, funnel, leadtime, kpiMonthly, sourceMonthly, currentStageMonthly, funnelMonthly, leadtimeMonthly };
-        initMonthFilter();
-        renderAll();
-        document.getElementById('updatedAt').textContent = `최근 새로고침: ${new Date().toLocaleString('ko-KR')}`;
-      } catch (error) {
-        console.error(error);
-        const box = document.getElementById('errorBox');
-        box.style.display = 'block';
-        box.textContent = '데이터를 불러오지 못했습니다. CSV 링크 게시 상태와 접근 권한을 확인해주세요.';
-        document.getElementById('updatedAt').textContent = '데이터 로딩 실패';
-      }
-    }
-
+    async function initDashboard(){ Chart.defaults.font.family='Noto Sans KR, system-ui, sans-serif'; Chart.defaults.color='#526071'; Chart.defaults.borderColor='#e8edf5'; try{ const [kpi,dailyApplicants,source,currentStage,funnel,leadtime,kpiMonthly,sourceMonthly,currentStageMonthly,funnelMonthly,leadtimeMonthly,kpiMonthlyDepartment,sourceMonthlyDepartment,currentStageMonthlyDepartment,funnelMonthlyDepartment,leadtimeMonthlyDepartment]=await Promise.all([loadCsv(CSV_URLS.kpi),loadCsv(CSV_URLS.dailyApplicants),loadCsv(CSV_URLS.source),loadCsv(CSV_URLS.currentStage),loadCsv(CSV_URLS.funnel),loadCsv(CSV_URLS.leadtime),loadCsv(CSV_URLS.kpiMonthly),loadCsv(CSV_URLS.sourceMonthly),loadCsv(CSV_URLS.currentStageMonthly),loadCsv(CSV_URLS.funnelMonthly),loadCsv(CSV_URLS.leadtimeMonthly),loadCsv(CSV_URLS.kpiMonthlyDepartment),loadCsv(CSV_URLS.sourceMonthlyDepartment),loadCsv(CSV_URLS.currentStageMonthlyDepartment),loadCsv(CSV_URLS.funnelMonthlyDepartment),loadCsv(CSV_URLS.leadtimeMonthlyDepartment)]); state.data={kpi,dailyApplicants,source,currentStage,funnel,leadtime,kpiMonthly,sourceMonthly,currentStageMonthly,funnelMonthly,leadtimeMonthly,kpiMonthlyDepartment,sourceMonthlyDepartment,currentStageMonthlyDepartment,funnelMonthlyDepartment,leadtimeMonthlyDepartment}; initPeriodFilter(); initDepartmentFilter(); renderAll(); document.getElementById('updatedAt').textContent='최근 새로고침: '+new Date().toLocaleString('ko-KR'); }catch(error){ console.error(error); const box=document.getElementById('errorBox'); box.style.display='block'; box.textContent='데이터를 불러오지 못했습니다. CSV 링크 게시 상태와 접근 권한을 확인해주세요.'; document.getElementById('updatedAt').textContent='데이터 로딩 실패'; } }
     initDashboard();
   </script>
 </body>
